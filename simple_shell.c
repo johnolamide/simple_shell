@@ -1,6 +1,4 @@
 #include "shell.h"
-#include <stdbool.h>
-void _execute(char* prompt, char* argv[], char* envp[]);
 /**
  *
  */
@@ -12,12 +10,15 @@ int main(int argc, char *argv[], char *envp[])
 	ssize_t len;
 	bool piped = false;
 
-	while (1 && !piped)
+	while (!piped)
 	{
-		write(STDOUT_FILENO, buf, sizeof(buf));
-		//piped = true;
+		if (isatty(STDIN_FILENO) == 0)
+			piped = true;
+		else
+			write(STDOUT_FILENO, buf, sizeof(buf));
 		len = getline(&prompt, &promptlen, stdin);
-		prompt[len - 1] = '\0';
+		if (prompt[len - 1] == '\n')
+			prompt[len - 1] = '\0';
 		_execute(prompt, argv, envp);
 	}	
 	return (0);
