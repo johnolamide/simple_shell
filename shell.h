@@ -14,5 +14,6 @@
 #include <sys/wait.h>
 
 void _execute(char* prompt, char* argv[], char* envp[]);
+char** _tokenize(char* prompt, char* delim);
 
 #endif
