@@ -13,7 +13,10 @@
 #include <sys/stat.h>
 #include <sys/wait.h>
 
+extern char** environ;
+
 void _execute(char* prompt, char* argv[], char* envp[]);
 char** _tokenize(char* prompt, char* delim);
+void _printenv(void);
 
 #endif
