@@ -1,18 +1,24 @@
 #include "shell.h"
 /**
- *
+ * main - shell entry function
+ * @argc: argument count
+ * @argv: argument vector
+ * @envp: emvironment variables
+ * Return: 0 for SUCCESS
  */
 int main(int argc, char *argv[], char *envp[])
 {
 	char buf[] = "$ ";
-	char* prompt = NULL;
+	char *prompt = NULL;
 	size_t promptlen = 0;
 	ssize_t len;
 	bool piped = false;
-	char** tokens;
-	char* delim = " ";
+	char **tokens;
+	char *delim = " ";
 	int i;
 
+	(void) argc;
+	(void) argv;
 	while (!piped)
 	{
 		if (isatty(STDIN_FILENO) == 0)
@@ -20,6 +26,8 @@ int main(int argc, char *argv[], char *envp[])
 		else
 			write(STDOUT_FILENO, buf, sizeof(buf));
 		len = getline(&prompt, &promptlen, stdin);
+		if (len == -1)
+			return (-1);
 		if (len > 0 && prompt != NULL)
 		{
 			if (strcmp(prompt, "exit\n") == 0)
@@ -30,13 +38,9 @@ int main(int argc, char *argv[], char *envp[])
 			if (prompt[len - 1] == '\n')
 				prompt[len - 1] = '\0';
 			tokens = _tokenize(prompt, delim);
-			if (tokens == NULL)
-				break;
 			_execute(tokens[0], tokens, envp);
 			for (i = 0; tokens[i] != NULL; i++)
-			{
 				free(tokens[i]);
-			}
 			free(tokens);
 			prompt = NULL;
 		}
@@ -47,15 +51,19 @@ int main(int argc, char *argv[], char *envp[])
 }
 
 /**
- *
+ * _tokenize - breaks strings to tokens
+ * @prompt: pointer to string
+ * @delim: string delimiter
+ * Return: pointer to array of strings
  */
-char** _tokenize(char* prompt, char* delim)
+char **_tokenize(char *prompt, char *delim)
 {
-	char** tokens;
+	char **tokens;
 	int count = 0;
 	int i = 0;
-	char* temp = strdup(prompt);
-	char* t = strtok(temp, delim);
+	char *temp = strdup(prompt);
+	char *t = strtok(temp, delim);
+
 	while (t != NULL)
 	{
 		count++;
@@ -63,7 +71,7 @@ char** _tokenize(char* prompt, char* delim)
 	}
 	free(temp);
 
-	tokens = malloc((count + 1) * sizeof(char*));
+	tokens = malloc((count + 1) * sizeof(char *));
 	t = strtok(prompt, delim);
 	while (t != NULL)
 	{
@@ -76,9 +84,13 @@ char** _tokenize(char* prompt, char* delim)
 }
 
 /**
- *
+ * _execute - executes shell commands
+ * @prompt: pointer to string command
+ * @argv: argument vector
+ * @envp: environment variables
+ * Return: void
  */
-void _execute(char* prompt, char* argv[], char* envp[])
+void _execute(char *prompt, char *argv[], char *envp[])
 {
 	int status;
 	pid_t pid = fork();
@@ -99,7 +111,8 @@ void _execute(char* prompt, char* argv[], char* envp[])
 }
 
 /**
- *
+ * _printenv - print the environment variables
+ * Return: void
  */
 void _printenv(void)
 {
