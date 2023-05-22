@@ -132,17 +132,15 @@ void _printenv(void)
  * @command: the PATH to be found
  * Return: an array of string.
  */
-
 char *get_path(char *command)
 {
-	char *path, *path_copy;
+	char *path_copy;
 	int commandlength;
 	char *path_token;
 	int dir_length;
 	char *file_path;
 	struct stat buffer;
-
-	path = getenv("PATH");
+	char *path = getenv("PATH");
 
 	if (path)
 	{
@@ -158,7 +156,6 @@ char *get_path(char *command)
 			strcat(file_path, "/");
 			strcat(file_path, command);
 			strcat(file_path, "\0");
-
 			if (stat(file_path, &buffer) == 0)
 			{
 				free(path_copy);
