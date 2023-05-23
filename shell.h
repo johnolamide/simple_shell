@@ -18,7 +18,6 @@ extern char** environ;
 void _execute(char* prompt, char* argv[], char* envp[]);
 char** _tokenize(char* prompt, char* delim);
 void _printenv(void);
-void execute(char *prompt, char *argv[]);
 char *get_path(char *command);
 
 #endif
