@@ -8,7 +8,7 @@
  */
 int main(int argc, char *argv[], char *envp[])
 {
-	char buf[] = "$ ";
+	char buf[] = "($) ";
 	char *prompt = NULL;
 	size_t promptlen = 0;
 	ssize_t len;
@@ -25,7 +25,7 @@ int main(int argc, char *argv[], char *envp[])
 			piped = true;
 		else
 			write(STDOUT_FILENO, buf, sizeof(buf));
-		len = getline(&prompt, &promptlen, stdin);
+		len = _getline(&prompt, &promptlen, STDIN_FILENO);
 		if (len == -1)
 			return (-1);
 		if (len > 0 && prompt != NULL)
