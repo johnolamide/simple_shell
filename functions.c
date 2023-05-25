@@ -9,11 +9,9 @@
 ssize_t _getline(char **lineptr, size_t *n, int fd)
 {
 	static char buffer[BUFFER_SIZE];
-	static int buffer_size = 0;
-	static int buffer_index = 0;
+	static int buffer_size, buffer_index;
 	char *line = NULL;
-	ssize_t line_size = 0;
-	ssize_t bytes_read;
+	ssize_t line_size = 0, bytes_read;
 
 	if (lineptr == NULL || n == NULL)
 		return (-1);
