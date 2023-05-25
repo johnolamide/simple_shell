@@ -25,6 +25,7 @@ int main(int argc, char *argv[], char *envp[])
 			piped = true;
 		else
 			write(STDOUT_FILENO, buf, sizeof(buf));
+		fflush(stdin);
 		len = _getline(&prompt, &promptlen, stdin);
 		if (len == -1)
 			_pexit(prompt);
