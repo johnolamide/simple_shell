@@ -40,6 +40,8 @@ int main(int argc, char *argv[], char *envp[])
 			for (i = 0; tokens[i] != NULL; i++)
 				free(tokens[i]);
 			free(tokens);
+			tokens = NULL;
+			free(prompt);
 			prompt = NULL;
 		}
 	}

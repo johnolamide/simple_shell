@@ -18,7 +18,7 @@ ssize_t _getline(char **lineptr, size_t *n, FILE *stream)
 	if (*lineptr == NULL)
 	{
 		*n = BUFFER_SIZE;
-		*lineptr = (char *)malloc(*n);
+		*lineptr = malloc(*n);
 		if (*lineptr == NULL)
 			return (-1);
 	}
@@ -30,7 +30,7 @@ ssize_t _getline(char **lineptr, size_t *n, FILE *stream)
 		{
 			char *tmp;
 			*n = total + len + 1;
-			tmp = (char *)realloc(*lineptr, *n);
+			tmp = realloc(*lineptr, *n);
 			if (tmp == NULL)
 				return (-1);
 			*lineptr = tmp;
