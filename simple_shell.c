@@ -29,7 +29,7 @@ int main(int argc, char *argv[], char *envp[])
 		len = _getline(&prompt, &promptlen, stdin);
 		if (len == -1)
 			_pexit(prompt);
-		if (len > 0 && prompt != NULL)
+		if (len > 1 && prompt != NULL)
 		{
 			if (strcmp(prompt, "exit\n") == 0)
 				_pexit(prompt);
