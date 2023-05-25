@@ -1,67 +1,64 @@
 #include "shell.h"
 /**
- * _getline - replica of the getline function
- * @lineptr: string pointer
- * @n: string length
- * @fd: file descriptor
- * Return: length of string
+ * _getline - reads a line from a stream and stores it in a buffer
+ * @lineptr: pointer to the buffer
+ * @n: pointer to the size of the buffer
+ * @stream: stream to read from
+ * Return: number of characters read, or -1 on error or end-of-file
  */
-ssize_t _getline(char **lineptr, size_t *n, int fd)
+ssize_t _getline(char **lineptr, size_t *n, FILE *stream)
 {
-	static char buffer[BUFFER_SIZE];
-	static int buffer_size, buffer_index;
-	char *line = NULL;
-	ssize_t line_size = 0, bytes_read;
+	char buffer[BUFFER_SIZE];
+	size_t total = 0;
+	size_t len;
 
-	if (lineptr == NULL || n == NULL)
+	if (lineptr == NULL || n == NULL || stream == NULL)
 		return (-1);
-	if (*lineptr != NULL)
+
+	if (*lineptr == NULL)
 	{
-		line = *lineptr;
-		line_size = *n;
+		*n = BUFFER_SIZE;
+		*lineptr = (char *)malloc(*n);
+		if (*lineptr == NULL)
+			return (-1);
 	}
-	while (1)
+
+	while (fgets(buffer, BUFFER_SIZE, stream))
 	{
-		if (buffer_index >= buffer_size)
+		len = strlen(buffer);
+		if (total + len + 1 > *n)
 		{
-			buffer_size = read(fd, buffer, BUFFER_SIZE);
-			buffer_index = 0;
-			if (buffer_size <= 0)
-				break;
-		}
-		if (line_size < 2)
-		{
-			line_size = BUFFER_SIZE;
-			line = realloc(line, line_size);
-			if (line == NULL)
+			char *tmp;
+			*n = total + len + 1;
+			tmp = (char *)realloc(*lineptr, *n);
+			if (tmp == NULL)
 				return (-1);
+			*lineptr = tmp;
 		}
-		bytes_read = 0;
-		while (buffer_index < buffer_size && bytes_read < line_size - 1)
-		{
-			line[bytes_read++] = buffer[buffer_index++];
-			if (line[bytes_read - 1] == '\n')
-				break;
-		}
-		if (bytes_read >= line_size - 1 && line[bytes_read - 1] != '\n')
-		{
-			line_size *= 2;
-			line = realloc(line, line_size);
-			if (line == NULL)
-				return (-1);
-		}
-		else
+		strcpy(*lineptr + total, buffer);
+		total += len;
+		if ((*lineptr)[total - 1] == '\n')
 			break;
 	}
-	if (bytes_read == 0)
-	{
-		free(line);
-		*lineptr = NULL;
-		*n = 0;
+
+	if (total == 0)
 		return (-1);
+
+	(*lineptr)[total] = '\0';
+	return (total);
+}
+
+/**
+ * _printenv - print the environment variables
+ * Return: void
+ */
+void _printenv(void)
+{
+	int i;
+
+	for (i = 0; environ[i] != NULL; i++)
+	{
+		write(STDOUT_FILENO, environ[i], strlen(environ[i]));
+		write(STDOUT_FILENO, "\n", 1);
 	}
-	line[bytes_read] = '\0';
-	*lineptr = line;
-	*n = line_size;
-	return (bytes_read);
 }

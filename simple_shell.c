@@ -25,16 +25,13 @@ int main(int argc, char *argv[], char *envp[])
 			piped = true;
 		else
 			write(STDOUT_FILENO, buf, sizeof(buf));
-		len = _getline(&prompt, &promptlen, STDIN_FILENO);
+		len = _getline(&prompt, &promptlen, stdin);
 		if (len == -1)
-			exit(0);
+			_pexit(prompt);
 		if (len > 0 && prompt != NULL)
 		{
 			if (strcmp(prompt, "exit\n") == 0)
-			{
-				free(prompt);
-				exit(EXIT_SUCCESS);
-			}
+				_pexit(prompt);
 			if (prompt[len - 1] == '\n')
 				prompt[len - 1] = '\0';
 			tokens = _tokenize(prompt, delim);
@@ -45,9 +42,17 @@ int main(int argc, char *argv[], char *envp[])
 			prompt = NULL;
 		}
 	}
-	if (prompt != NULL)
-		free(prompt);
 	return (0);
+}
+
+/**
+ * _pexit - exit the shell
+ * @prompt: pointer to the prompt
+ */
+void _pexit(char *prompt)
+{
+	free(prompt);
+	exit(EXIT_SUCCESS);
 }
 
 /**
@@ -113,21 +118,6 @@ void _execute(char *prompt, char *argv[], char *envp[])
 }
 
 /**
- * _printenv - print the environment variables
- * Return: void
- */
-void _printenv(void)
-{
-	int i;
-
-	for (i = 0; environ[i] != NULL; i++)
-	{
-		write(STDOUT_FILENO, environ[i], strlen(environ[i]));
-		write(STDOUT_FILENO, "\n", 1);
-	}
-}
-
-/**
  * get_path - gets or fetches the PATH of a file
  * @command: the PATH to be found
  * Return: an array of string.
@@ -170,7 +160,7 @@ char *get_path(char *command)
 		free(path_copy);
 		if (stat(command, &buffer) == 0)
 			return (command);
-		return (NULL);
+		return (command);
 	}
-	return (NULL);
+	return (command);
 }
