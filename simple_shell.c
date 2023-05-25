@@ -117,7 +117,20 @@ void _execute(char *prompt, char *argv[], char *envp[])
 		exit(EXIT_SUCCESS);
 	}
 	else
+	{
 		wait(&status);
+		if (WIFEXITED(status))
+		{
+			int exitStatus = WEXITSTATUS(status);
+			if (exitStatus != 0)
+				exit(exitStatus);
+		}
+		else if (WIFSIGNALED(status))
+		{
+			int signalNumber = WTERMSIG(status);
+			exit(128 + signalNumber);
+		}
+	}
 }
 
 /**
