@@ -27,7 +27,7 @@ int main(int argc, char *argv[], char *envp[])
 			write(STDOUT_FILENO, buf, sizeof(buf));
 		len = _getline(&prompt, &promptlen, STDIN_FILENO);
 		if (len == -1)
-			return (-1);
+			exit(0);
 		if (len > 0 && prompt != NULL)
 		{
 			if (strcmp(prompt, "exit\n") == 0)
