@@ -8,13 +8,11 @@
  */
 int main(int argc, char *argv[], char *envp[])
 {
-	char buf[] = "($) ";
-	char *prompt = NULL;
+	char buf[] = "($) ", *prompt = NULL;
 	size_t promptlen = 0;
 	ssize_t len;
-	bool piped = false;
-	char **tokens;
-	char *delim = " ";
+	char piped = 0;
+	char **tokens, *delim = " ";
 	int i;
 
 	(void) argc;
@@ -22,13 +20,16 @@ int main(int argc, char *argv[], char *envp[])
 	while (!piped)
 	{
 		if (isatty(STDIN_FILENO) == 0)
-			piped = true;
+			piped = 1;
 		else
 			write(STDOUT_FILENO, buf, sizeof(buf));
 		fflush(stdin);
 		len = _getline(&prompt, &promptlen, stdin);
 		if (len == -1)
+		{
+			write(STDIN_FILENO, "\n", 1);
 			_pexit(prompt);
+		}
 		if (len > 1 && prompt != NULL)
 		{
 			if (strcmp(prompt, "exit\n") == 0)
