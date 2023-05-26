@@ -27,7 +27,7 @@ int main(int argc, char *argv[], char *envp[])
 		len = _getline(&prompt, &promptlen, stdin);
 		if (len == -1)
 		{
-			write(STDIN_FILENO, "\n", 1);
+			write(STDOUT_FILENO, "\n", 1);
 			_pexit(prompt);
 		}
 		if (len > 1 && prompt != NULL)
