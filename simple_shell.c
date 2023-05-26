@@ -68,8 +68,7 @@ void _pexit(char *prompt)
 char **_tokenize(char *prompt, char *delim)
 {
 	char **tokens;
-	int count = 0;
-	int i = 0;
+	int count = 0, i = 0;
 	char *temp = strdup(prompt);
 	char *t = strtok(temp, delim);
 
