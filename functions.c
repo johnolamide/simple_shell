@@ -62,3 +62,19 @@ void _printenv(void)
 		write(STDOUT_FILENO, "\n", 1);
 	}
 }
+
+/**
+ * _isWhiteSpace - check for whitespace prompt
+ * @prompt: string prompt
+ * Return: returns 1 if all is whitespace
+ */
+int _isWhiteSpace(const char *prompt)
+{
+	while (*prompt)
+	{
+		if (!isspace(*prompt))
+			return (0);
+		prompt++;
+	}
+	return (1);
+}
