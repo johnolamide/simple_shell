@@ -8,39 +8,39 @@
  */
 int main(int argc, char *argv[], char *envp[])
 {
-	char buf[] = "($) ", *prompt = NULL;
+	char buf[] = "($) ", *prompt = NULL, *command = NULL;
 	size_t promptlen = 0;
 	ssize_t len;
-	char piped = 0;
 	char **tokens, *delim = " ";
 	int i;
 
 	(void) argc;
 	(void) argv;
-	while (!piped)
+	while (1)
 	{
-		if (isatty(STDIN_FILENO) == 0)
-			piped = 1;
-		else
+		if (isatty(STDIN_FILENO) == 1)
 			write(STDOUT_FILENO, buf, sizeof(buf));
 		fflush(stdin);
 		len = _getline(&prompt, &promptlen, stdin);
 		if (len == -1)
 		{
-			write(STDOUT_FILENO, "\n", 1);
+			/*write(STDOUT_FILENO, "\n", 1);*/
 			_pexit(prompt);
 		}
 		if (len > 1 && prompt != NULL)
 		{
 			if (strcmp(prompt, "exit\n") == 0)
 				_pexit(prompt);
-			if (prompt[len - 1] == '\n')
-				prompt[len - 1] = '\0';
-			tokens = _tokenize(prompt, delim);
-			_execute(tokens[0], tokens, envp);
-			for (i = 0; tokens[i] != NULL; i++)
-				free(tokens[i]);
-			free(tokens);
+			command = strtok(prompt, "\n");
+			while (command != NULL)
+			{
+				tokens = _tokenize(command, delim);
+				_execute(tokens[0], tokens, envp);
+				for (i = 0; tokens[i] != NULL; i++)
+					free(tokens[i]);
+				free(tokens);
+				command = strtok(NULL, "\n");
+			}
 			tokens = NULL;
 			free(prompt);
 			prompt = NULL;
