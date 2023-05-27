@@ -12,7 +12,7 @@ int main(int argc, char *argv[], char *envp[])
 	size_t promptlen = 0;
 	ssize_t len;
 	char **tokens, *delim = " ";
-	int i;
+	int i, comp = 0;
 
 	(void) argc;
 	(void) argv;
@@ -23,17 +23,17 @@ int main(int argc, char *argv[], char *envp[])
 		fflush(stdin);
 		len = _getline(&prompt, &promptlen, stdin);
 		if (len == -1)
-		{
-			/*write(STDOUT_FILENO, "\n", 1);*/
 			_pexit(prompt);
-		}
 		if (len > 1 && prompt != NULL)
 		{
 			if (strcmp(prompt, "exit\n") == 0)
 				_pexit(prompt);
 			command = strtok(prompt, "\n");
+			comp = strcmp(command, "\0");
 			while (command != NULL)
 			{
+				if (comp == 0)
+					continue;
 				tokens = _tokenize(command, delim);
 				_execute(tokens[0], tokens, envp);
 				for (i = 0; tokens[i] != NULL; i++)
