@@ -111,6 +111,8 @@ void _execute(char *prompt, char *argv[], char *envp[])
 			exit(EXIT_SUCCESS);
 		}
 		inputCommand = get_path(prompt);
+		if (inputCommand == NULL)
+			exit(EXIT_FAILURE);
 		execve(inputCommand, argv, envp);
 		perror(inputCommand);
 		exit(EXIT_SUCCESS);
