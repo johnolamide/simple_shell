@@ -100,16 +100,18 @@ char **_tokenize(char *prompt, char *delim)
 void _execute(char *prompt, char *argv[], char *envp[])
 {
 	int status;
-	char *inputCommand = NULL;
-	pid_t pid = fork();
+	pid_t pid;
+	char *inputCommand;
+
+	if (strcmp(prompt, "env") == 0)
+	{
+		_printenv();
+		exit(EXIT_SUCCESS);
+	}
+	pid = fork();
 
 	if (pid == 0)
 	{
-		if (strcmp(prompt, "env") == 0)
-		{
-			_printenv();
-			exit(EXIT_SUCCESS);
-		}
 		inputCommand = get_path(prompt);
 		if (inputCommand == NULL)
 			exit(EXIT_FAILURE);
